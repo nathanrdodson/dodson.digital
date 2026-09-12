@@ -1,0 +1,94 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import GrainOverlay from '../components/GrainOverlay.astro';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/app.scss';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  bodyClass?: string;
+  pageStyles?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'Nathan Dodson',
+  description = 'Writing · Photography · Travel',
+  image = '/images/profile.webp',
+  bodyClass = '',
+  pageStyles,
+  noindex = false,
+} = Astro.props;
+
+const siteTitle = 'Nathan Dodson';
+const siteUrl = 'https://dodson.mba';
+
+
+const fullTitle = title === siteTitle ? title : `${title} — ${siteTitle}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{fullTitle}</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- SEO -->
+    <meta name="description" content={description} />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:url" content={siteUrl + Astro.url.pathname} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${image}`} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={siteUrl + Astro.url.pathname} />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Fonts / Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
+    <!-- Page-specific styles injected from page components -->
+    {pageStyles && <style set:html={pageStyles} />}
+
+    <!-- Cross-document view transitions — swaps content in place instead of a full
+         white repaint on every navigation. The default cross-fade is switched off in
+         _global.scss; this is here for the instant swap, not for an animation.
+         fallback="swap" keeps browsers without view-transition support from
+         simulating the fade in JS. -->
+    <ClientRouter fallback="swap" />
+  </head>
+  <body class={bodyClass}>
+    <div class="main-wrap">
+      <Header />
+      <slot />
+    </div>
+
+    <Footer />
+    <GrainOverlay />
+
+    <!-- Shared app scripts (Headroom, menu) and the inline header search -->
+    <script>
+      import '../scripts/app';
+      import '../scripts/header-search';
+    </script>
+  </body>
+</html>

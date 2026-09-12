@@ -1,0 +1,117 @@
+// Article card — no surface, no border, no shadow, no frame. The image sits directly
+// on the paper with the text below it: display serif title over mono metadata.
+
+.m-article-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 48px;
+
+  @include respond-to('medium') {
+    width: calc((100% / 2) - 20px);
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 52px;
+  }
+
+  @include respond-to('large') {
+    width: calc((100% / 3) - 40px);
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 64px;
+  }
+}
+
+.m-article-card__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: var(--secondary-subtle-color);
+  margin-bottom: 20px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+}
+
+.m-article-card:hover,
+.m-article-card:focus-within {
+  .m-article-card__title a {
+    color: var(--accent-color);
+  }
+}
+
+.m-article-card__featured {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  z-index: 2;
+  color: var(--background-color);
+  background-color: var(--accent-color);
+  font-size: 0.75rem;
+}
+
+.m-article-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.m-article-card__tag {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--titles-color);
+  opacity: 0.75;
+  margin-bottom: 8px;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--accent-color);
+    opacity: 1;
+  }
+}
+
+.m-article-card__title {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: 1.375rem;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--primary-foreground-color);
+  margin: 0 0 10px;
+
+  a {
+    color: inherit;
+    transition: color 0.15s ease;
+  }
+}
+
+.m-article-card__meta {
+  margin: auto 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--titles-color);
+  opacity: 0.75;
+}
+
+.m-article-card__meta-sep {
+  display: inline-block;
+  margin: 0 7px;
+  opacity: 0.5;
+}

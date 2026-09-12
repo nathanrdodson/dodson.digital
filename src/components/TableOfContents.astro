@@ -1,0 +1,46 @@
+---
+interface Props {
+  items: { id: string; label: string }[];
+  label?: string;
+}
+
+const { items, label = 'Contents' } = Astro.props;
+---
+
+<nav class="c-toc" aria-label="Table of contents">
+  <p class="c-toc__label" aria-hidden="true">{label}</p>
+  <ul class="c-toc__list">
+    {items.map(item => (
+      <li>
+        <a href={`#${item.id}`} class="c-toc__link" data-section={item.id}>{item.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Re-runs after each view transition; the previous observer is disconnected so it
+  // doesn't keep watching nodes from the page we just left.
+  let tocObserver: IntersectionObserver | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    tocObserver?.disconnect();
+
+    const links = document.querySelectorAll<HTMLAnchorElement>('.c-toc__link');
+    if (links.length === 0) return;
+
+    const setActive = (id: string) => {
+      links.forEach(l => l.classList.toggle('is-active', l.dataset.section === id));
+    };
+
+    tocObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+
+    [...links]
+      .map(l => document.getElementById(l.dataset.section ?? ''))
+      .forEach(s => s && tocObserver!.observe(s));
+  });
+</script>

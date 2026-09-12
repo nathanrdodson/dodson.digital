@@ -1,0 +1,38 @@
+// Post feature image. Sits inside the content column rather than full-bleed, so it
+// aligns with the body text and the title instead of centring on the page.
+
+.m-hero {
+  position: relative;
+  display: block;
+  margin-bottom: 30px;
+
+  &.no-picture.in-post {
+    display: none;
+  }
+}
+
+.m-hero__picture {
+  display: block;
+  width: 100%;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    // Keeps very tall images from pushing the title off screen while still showing
+    // the whole frame on load.
+    max-height: 68vh;
+    object-fit: cover;
+    background-color: var(--secondary-subtle-color);
+  }
+}
+
+.m-hero__caption {
+  margin: 10px 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--titles-color);
+  opacity: 0.75;
+}

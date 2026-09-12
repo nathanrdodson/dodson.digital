@@ -1,0 +1,18 @@
+.m-heading__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--primary-foreground-color);
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  margin: 0 0 12px;
+
+  &.in-post {
+    font-size: clamp(1.875rem, 4.5vw, 2.875rem);
+    margin-bottom: 16px;
+  }
+
+  &.in-page {
+    margin: 0;
+  }
+}

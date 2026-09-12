@@ -1,0 +1,159 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import { readingMinutes } from '../../lib/reading-time';
+import '../../styles/post.scss';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', (e: CollectionEntry<'blog'>) => !e.data.draft);
+
+  return allPosts.map((post: CollectionEntry<'blog'>) => {
+    const related = allPosts
+      .filter(
+        (p: CollectionEntry<'blog'>) =>
+          p.id !== post.id &&
+          p.data.tags.some((t: string) => post.data.tags.includes(t))
+      )
+      .sort(
+        (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+          b.data.date.getTime() - a.data.date.getTime()
+      )
+      .slice(0, 3);
+
+    return {
+      params: { slug: post.id },
+      props: { post, related },
+    };
+  });
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  related: CollectionEntry<'blog'>[];
+}
+
+const { post, related } = Astro.props;
+const { title, featureImage, featureImageAlt, featureImageCaption, tags, date } = post.data;
+const { Content, headings } = await render(post);
+
+const tocItems = headings
+  .filter(h => h.depth >= 2 && h.depth <= 3 && h.text.trim().length > 0)
+  .map(h => ({ id: h.slug, label: h.text }));
+const hasToc = tocItems.length >= 2;
+
+const primaryTag = tags[0] ?? null;
+const minutes = readingMinutes(post.body);
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={title}
+  description={post.data.excerpt}
+  image={featureImage}
+  bodyClass="is-post"
+>
+  <main>
+    <article>
+      <ReadingProgress />
+
+      <div class="l-content in-post">
+        <div class={`l-wrapper in-post has-toc${featureImage ? '' : ' no-image'} js-animation-wrapper`} data-animate="fade-up">
+          <div class="l-post-body">
+            <aside class="c-side">
+              {hasToc && <TableOfContents items={tocItems} label="On this page" />}
+
+              <div class="c-side__meta">
+                <p class="c-side__label">Published</p>
+                <p class="c-side__value">{formattedDate}</p>
+
+                <p class="c-side__label">Length</p>
+                <p class="c-side__value">{minutes} min read</p>
+
+                {tags.length > 0 && (
+                  <>
+                    <p class="c-side__label">Tagged</p>
+                    <ul class="c-side__tags">
+                      {tags.map((tag: string) => (
+                        <li>
+                          <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+
+              <div class="c-side__meta">
+                <p class="c-side__label">Written by</p>
+                <p class="c-side__author"><a href="/">Nathan Dodson</a></p>
+                <p class="c-side__value">Writing / Photography</p>
+                <a
+                  href="https://github.com/nathanrdodson"
+                  class="c-side__author-link"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <i class="iconoir-github" aria-hidden="true"></i>
+                  GitHub
+                </a>
+              </div>
+            </aside>
+            <div class="l-post-body__content">
+              <div class="l-post-content js-progress-content">
+                <Hero image={featureImage} imageAlt={featureImageAlt} inPost={true} />
+
+                {featureImage && featureImageCaption && (
+                  <p class="m-small-text m-hero__caption">{featureImageCaption}</p>
+                )}
+
+                <header class="m-heading">
+                  <h1 class="m-heading__title in-post">{title}</h1>
+                  <div class="m-heading__meta">
+                    {primaryTag && (
+                      <>
+                        <a href={`/blog/?tag=${encodeURIComponent(primaryTag)}`} class="m-heading__meta__tag">{primaryTag}</a>
+                        <span class="m-heading__meta__divider" aria-hidden="true">&bull;</span>
+                      </>
+                    )}
+                    <span class="m-heading__meta__time">{formattedDate}</span>
+                  </div>
+                </header>
+
+                <div class="pos-relative js-post-content">
+                  <Content />
+
+                  {tags.length > 0 && (
+                    <section class="m-tags in-post">
+                      <ul>
+                        {tags.map((tag: string) => (
+                          <li>
+                            <a href={`/blog/?tag=${encodeURIComponent(tag)}`} title={tag}>{tag}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <RelatedPosts posts={related} />
+      </div>
+    </article>
+  </main>
+
+  <script>
+    import '../../scripts/post';
+  </script>
+</BaseLayout>

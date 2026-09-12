@@ -1,0 +1,109 @@
+---
+// Editorial home hero — the name is the graphic. No image, no entrance animation.
+---
+
+<section class="home-hero">
+  <div class="l-wrapper">
+    <h1 class="home-hero__name noselect">dodson.mba</h1>
+    <p class="home-hero__title">Nathan Dodson / Writing / Photography</p>
+    <div class="home-hero__inner">
+      <div class="home-hero__bio">
+        <slot />
+      </div>
+      <ul class="c-actions">
+        <li>
+          <a href="https://github.com/nathanrdodson" class="c-chip" target="_blank" rel="noopener">
+            <i class="iconoir-github" aria-hidden="true"></i>
+            GitHub
+          </a>
+        </li>
+        <li>
+          <a href="https://www.letterboxd.com/nathanrdodson" class="c-chip" target="_blank" rel="noopener">
+            <i class="iconoir-movie" aria-hidden="true"></i>
+            Letterboxd
+          </a>
+        </li>
+        <li>
+          <a href="https://www.stats.fm/nrd" class="c-chip" target="_blank" rel="noopener">
+            <i class="iconoir-music-note" aria-hidden="true"></i>
+            Stats.fm
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style lang="scss">
+  @import '../styles/common/mixins';
+  @import '../styles/common/variables';
+
+  .home-hero {
+    padding: 128px 0 56px;
+    border-bottom: 1px solid var(--primary-border-color);
+
+    @include respond-to('medium') {
+      padding: 200px 0 64px;
+    }
+  }
+
+  .home-hero__name {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--primary-foreground-color);
+    margin: 0 0 24px;
+
+    // Always one line, at every viewport. Sizing off vw makes fit viewport-independent
+    // (text and viewport scale together), and nowrap enforces it. The 195px cap matters:
+    // .l-wrapper stops growing at 1200px, so uncapped vw would eventually overrun it.
+    white-space: nowrap;
+    font-size: min(13vw, 195px);
+
+    // Optical alignment: pull the glyph edge past the left grid line so the type reads
+    // as set on a press rather than centered in a div. em-based, so the overshoot
+    // scales with the type instead of drifting between viewports.
+    margin-left: -0.05em;
+  }
+
+  .home-hero__title {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--titles-color);
+    margin: 0 0 44px;
+  }
+
+  .home-hero__inner {
+    max-width: 46ch;
+  }
+
+  .home-hero__bio {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--titles-color);
+    margin: 0 0 32px;
+
+    :global(p) {
+      margin: 0 0 12px;
+
+      &:last-child { margin-bottom: 0; }
+    }
+
+    :global(a) {
+      color: var(--accent-color);
+      border-bottom: 1px solid transparent;
+      @include transition(border-color 0.15s ease);
+
+      &:hover {
+        border-bottom-color: var(--accent-color);
+      }
+    }
+  }
+
+  // Elsewhere links use the shared .c-actions / .c-chip primitives.
+</style>

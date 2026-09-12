@@ -1,0 +1,245 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import GenerativeArt from './GenerativeArt.astro';
+import { readingMinutes } from '../lib/reading-time';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  showAll?: boolean;
+}
+
+const { posts, showAll = false } = Astro.props;
+const displayed = showAll ? posts : posts.slice(0, 8);
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<!--
+  Keyboard: j / k move through the list, Enter opens the focused post, Esc clears.
+  Wired in src/scripts/home-keys.ts against real focus, so Tab and screen readers
+  travel the same path.
+-->
+<section class="wl">
+  <div class="l-wrapper">
+    <header class="wl__header">
+      <h2 class="wl__heading">Writing</h2>
+    </header>
+
+    {displayed.length > 0 ? (
+      <ol class="wl__items">
+        {displayed.map((post) => {
+          const minutes = readingMinutes(post.body);
+          return (
+            <li class="wl__item">
+              <a href={`/blog/${post.id}/`} class="wl__link js-wl-link">
+                <span class="wl__marker" aria-hidden="true"></span>
+
+                <span class="wl__text">
+                  <span class="wl__title">{post.data.title}</span>
+                  <span class="wl__meta">
+                    <span>{formatDate(post.data.date)}</span>
+                    <span class="wl__meta-sep" aria-hidden="true">/</span>
+                    <span>{minutes} min</span>
+                    {post.data.tags[0] && (
+                      <>
+                        <span class="wl__meta-sep" aria-hidden="true">/</span>
+                        <span>{post.data.tags[0]}</span>
+                      </>
+                    )}
+                  </span>
+                </span>
+
+                <span class="wl__thumb">
+                  {post.data.featureImage ? (
+                    <img src={post.data.featureImage} alt="" loading="lazy" />
+                  ) : (
+                    <GenerativeArt id={post.id} />
+                  )}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    ) : (
+      <p class="wl__empty">No posts yet — check back soon.</p>
+    )}
+
+    {!showAll && posts.length > 8 && (
+      <div class="wl__more">
+        <a href="/blog/" class="c-chip">
+          All writing
+          <i class="iconoir-arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style lang="scss">
+  @import '../styles/common/mixins';
+  @import '../styles/common/variables';
+
+  .wl {
+    padding-top: clamp(96px, 15vh, 200px);
+    padding-bottom: 72px;
+  }
+
+  .wl__header {
+    margin-bottom: 40px;
+  }
+
+  .wl__heading {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: clamp(1.875rem, 5vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--primary-foreground-color);
+    margin: 0;
+  }
+
+  .wl__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  // Aligned index: every row flush left so the rules line up across the whole list.
+  .wl__item {
+    border-top: 1px solid var(--primary-border-color);
+
+    &:last-child {
+      border-bottom: 1px solid var(--primary-border-color);
+    }
+  }
+
+  .wl__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 22px 0;
+    padding-left: 0;
+    @include transition(padding-left 90ms linear);
+  }
+
+  // Selection indicator — the row indents and a rule appears at its left edge. Shape
+  // and position rather than color, so it survives grayscale and colorblindness, and
+  // it sits inside the row so it can never be clipped at the viewport edge.
+  .wl__marker {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 14px;
+    height: 1px;
+    background-color: var(--accent-color);
+    opacity: 0;
+    @include transition(opacity 90ms linear);
+  }
+
+  .wl__link:focus-visible {
+    outline: none;
+    padding-left: 26px;
+
+    .wl__marker {
+      opacity: 1;
+    }
+
+    .wl__title {
+      color: var(--accent-color);
+    }
+  }
+
+  .wl__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .wl__title {
+    display: block;
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--primary-foreground-color);
+    @include transition(color 90ms linear);
+  }
+
+  // Metadata reveals on hover/focus. Height is always reserved and only opacity
+  // animates, so nothing reflows underneath.
+  .wl__meta {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    opacity: 0;
+    @include transition(opacity 90ms linear);
+  }
+
+  .wl__meta-sep {
+    display: inline-block;
+    margin: 0 8px;
+    opacity: 0.45;
+  }
+
+  .wl__link:hover .wl__meta,
+  .wl__link:focus-visible .wl__meta {
+    opacity: 1;
+  }
+
+  .wl__thumb {
+    // Positioned so the generative-art fallback (absolute, inset 0) fills it.
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: 88px;
+    height: 64px;
+    overflow: hidden;
+    background-color: var(--secondary-subtle-color);
+
+    @include respond-to('medium') {
+      width: 124px;
+      height: 84px;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .wl__empty {
+    color: var(--titles-color);
+    font-size: 0.9375rem;
+    padding: 32px 0;
+  }
+
+  .wl__more {
+    margin-top: 36px;
+  }
+
+  // "All writing" uses the shared .c-chip primitive.
+
+  @media (max-width: 32rem) {
+    .wl__link {
+      gap: 18px;
+      padding: 18px 0;
+    }
+
+    .wl__thumb {
+      width: 68px;
+      height: 52px;
+    }
+  }
+</style>

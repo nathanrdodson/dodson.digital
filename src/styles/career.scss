@@ -1,0 +1,238 @@
+@import "common/mixins";
+@import "common/variables";
+
+// Career page — timeline layout
+
+.c-career {
+  padding: 0 0 60px;
+}
+
+// Header — page title first, then one mono identity line, then one mono utility row.
+// Everything secondary shares a single face, size and rhythm so the block reads as
+// composed rather than as four unrelated things stacked up.
+.c-career__header {
+  padding: 96px 0 40px;
+  margin-bottom: 56px;
+  border-bottom: 1px solid var(--primary-border-color);
+  text-align: left;
+
+  @include respond-to('medium') {
+    padding: 140px 0 48px;
+  }
+}
+
+.c-career__pagetitle {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--primary-foreground-color);
+  margin: 0 0 18px;
+}
+
+.c-career__whois {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: var(--titles-color);
+  margin: 0 0 26px;
+}
+
+// Actions row uses the shared .c-actions / .c-chip / .c-btn-solid primitives.
+
+// Section
+
+.c-career__section {
+  margin-bottom: 52px;
+}
+
+// No rule under section titles — six of them stacked down the page was the main
+// source of horizontal noise. Scale and weight carry the hierarchy instead.
+.c-career__section-title {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: 1.4375rem;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--primary-foreground-color);
+  margin: 0 0 26px;
+}
+
+// Timeline
+
+.c-timeline {
+  position: relative;
+  padding-left: 24px;
+
+  @include respond-to('medium') {
+    padding-left: 32px;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 1px;
+    height: calc(100% - 6px);
+    background: var(--primary-border-color);
+  }
+}
+
+.c-timeline__entry {
+  position: relative;
+  padding-bottom: 36px;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.c-timeline__marker {
+  position: absolute;
+  top: 6px;
+  left: -28px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  border: 2px solid var(--background-color);
+
+  @include respond-to('medium') {
+    left: -36px;
+  }
+}
+
+.c-timeline__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-bottom: 6px;
+}
+
+.c-timeline__dates {
+  font-size: 0.8125rem;
+  color: var(--accent-color);
+  letter-spacing: 0.5px;
+}
+
+.c-timeline__location {
+  font-size: 0.8125rem;
+  color: var(--titles-color);
+}
+
+.c-timeline__role {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-foreground-color);
+  margin: 0 0 4px;
+  letter-spacing: 0.3px;
+}
+
+.c-timeline__org {
+  font-size: 0.9375rem;
+  color: var(--titles-color);
+  margin: 0 0 12px;
+}
+
+.c-timeline__detail {
+  font-size: 0.875rem;
+  color: var(--titles-color);
+  margin: 0;
+}
+
+.c-timeline__bullets {
+  padding-left: 18px;
+  margin: 0;
+
+  li {
+    font-size: 0.9375rem;
+    color: var(--primary-foreground-color);
+    line-height: 1.7;
+    margin-bottom: 6px;
+    opacity: 0.85;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Skills
+
+.c-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.c-skills__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @include respond-to('medium') {
+    flex-direction: row;
+    gap: 0;
+  }
+
+}
+
+.c-skills__label {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  color: var(--accent-color);
+  letter-spacing: 0.5px;
+  min-width: 120px;
+  padding-top: 2px;
+  padding-right: 28px;
+}
+
+.c-skills__items {
+  font-size: 0.9375rem;
+  color: var(--primary-foreground-color);
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+// Body layout (TOC + content)
+
+.c-career__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  @include respond-to('large') {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 48px;
+  }
+}
+
+.c-career__content {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+// Leadership list
+
+.c-career__list {
+  padding-left: 18px;
+  margin: 0;
+
+  li {
+    font-size: 0.9375rem;
+    color: var(--primary-foreground-color);
+    line-height: 1.7;
+    margin-bottom: 8px;
+    opacity: 0.85;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

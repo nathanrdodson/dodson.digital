@@ -1,0 +1,21 @@
+// Post body layout (TOC + content)
+
+.l-post-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  @include respond-to('large') {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 48px;
+  }
+}
+
+.l-post-body__content {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+// The sticky sidebar column itself is .c-side, defined in components/_toc.scss so
+// both blog posts and /experience can share it.

@@ -1,0 +1,19 @@
+---
+interface Props {
+  image?: string;
+  imageAlt?: string;
+  inPost?: boolean;
+}
+
+const { image, imageAlt = '', inPost = false } = Astro.props;
+---
+
+{image ? (
+  <section class={`m-hero with-picture${inPost ? ' in-post' : ''}`} data-animate="fade">
+    <div class={`m-hero__picture${inPost ? ' in-post' : ''}`}>
+      <img src={image} alt={imageAlt} />
+    </div>
+  </section>
+) : (
+  <section class={`m-hero no-picture${inPost ? ' in-post' : ''}`} data-animate="fade"></section>
+)}

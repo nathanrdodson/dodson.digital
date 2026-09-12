@@ -1,0 +1,65 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import GenerativeArt from './GenerativeArt.astro';
+import { readingMinutes } from '../lib/reading-time';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, featureImage, featureImageAlt, tags, featured, date } = post.data;
+const url = `/blog/${post.id}/`;
+const primaryTag = tags[0] ?? null;
+const minutes = readingMinutes(post.body);
+
+function timeAgo(d: Date): string {
+  const seconds = Math.floor((Date.now() - d.getTime()) / 1000);
+  const intervals = [
+    { label: 'year', seconds: 31536000 },
+    { label: 'month', seconds: 2592000 },
+    { label: 'week', seconds: 604800 },
+    { label: 'day', seconds: 86400 },
+    { label: 'hour', seconds: 3600 },
+    { label: 'minute', seconds: 60 },
+  ];
+  for (const i of intervals) {
+    const c = Math.floor(seconds / i.seconds);
+    if (c >= 1) return `${c} ${i.label}${c !== 1 ? 's' : ''} ago`;
+  }
+  return 'just now';
+}
+---
+
+<article class={`m-article-card${featureImage ? '' : ' no-picture'}`}>
+  <a href={url} class="m-article-card__media" tabindex="-1" aria-hidden="true">
+    {featureImage ? (
+      <img src={featureImage} loading="lazy" alt={featureImageAlt} />
+    ) : (
+      <GenerativeArt id={post.id} />
+    )}
+    {featured && (
+      <span class="m-article-card__featured" aria-hidden="true">
+        <i class="iconoir-star"></i>
+      </span>
+    )}
+  </a>
+
+  <div class="m-article-card__body">
+    {primaryTag && (
+      <a href={`/blog/?tag=${encodeURIComponent(primaryTag)}`} class="m-article-card__tag">
+        {primaryTag}
+      </a>
+    )}
+
+    <h2 class="m-article-card__title">
+      <a href={url}>{title}</a>
+    </h2>
+
+    <p class="m-article-card__meta">
+      <span>{timeAgo(date)}</span>
+      <span class="m-article-card__meta-sep" aria-hidden="true">/</span>
+      <span>{minutes} min</span>
+    </p>
+  </div>
+</article>
