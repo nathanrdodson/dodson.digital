@@ -95,12 +95,6 @@ No dependabot or renovate config yet.
 
 ~176MB (pre-split measurement) of images uploaded/deployed on every build. Resolved as a side effect of `PERF-1`.
 
-#### `DX-1` — No `.nvmrc`
-
-Node 22.12+ is a hard requirement documented as a trap in CLAUDE.md, but nothing pins it — `nvm use` alone picks the machine default.
-
-- **Fix:** one-line `.nvmrc` containing `22`.
-
 #### `DX-2` — No formatter or linter outside Markdown
 
 No prettier, eslint, stylelint, or `.editorconfig`. Markdown is the only linted format in a repo that is mostly Astro, TypeScript, and SCSS.
@@ -134,3 +128,4 @@ Slider CSS ships to pages with no slider. The JS is correctly scoped and does no
 | :--- | :--- | :--- | :--- |
 | `CONTENT-0` | (inherited from dodson.mba, pre-split) 16 gallery photos 404ing in production after a cleanup pass scanned only `featureImage` and missed the `images:` arrays | 2026-08-15 | `e5bb55c` (dodson.mba) |
 | `CONTENT-4` | (inherited from dodson.mba, pre-split) Broken in-page anchor `#map` in the Tunisia post; heading id is `mapbox` | 2026-08-15 | `9db6657` (dodson.mba) |
+| `DX-1` | No `.nvmrc`; added one pinning Node 22, needed for the new deploy workflow to pin its Node setup step anyway | 2026-09-12 | (pending) |

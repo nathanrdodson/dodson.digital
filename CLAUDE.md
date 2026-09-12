@@ -87,7 +87,9 @@ The markdownlint config intentionally disables every rule that would rewrite pro
 
 ## Deployment
 
-Not yet configured. Planned: Cloudflare Pages via `wrangler`, matching dodson.mba's deploy-on-push-to-`main` model. Custom domain via `public/CNAME` (already set to `dodson.digital`). Update this section once the pipeline exists.
+Cloudflare Pages, project `dodson-digital`, custom domain `dodson.digital` attached directly in the Cloudflare dashboard. Push to `main` → `.github/workflows/deploy.yml` builds on Node 22 and deploys via `cloudflare/wrangler-action` (`wrangler pages deploy`). Needs the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repo secrets — the token is a Cloudflare-account credential the user generates themselves, never create one on their behalf.
+
+There is no PR-validation CI here yet (unlike dodson.mba's `ci.yml`) — see `CI-1` in ISSUES.md. Manual deploy: `npm run build && wrangler pages deploy dist --project-name dodson-digital --branch main`.
 
 ## Issue tracking
 
